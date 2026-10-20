@@ -1,0 +1,8 @@
+# Sensitive credentials
+key.json
+ftp.txt
+taikhoanweb
+
+# Logs & temp files
+*.log
+scratch/

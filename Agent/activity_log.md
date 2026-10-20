@@ -1,22 +1,15 @@
 # Nhật Ký Hoạt Động (Activity Log) - ebo.com.vn
 
-## [2026-10-20 11:58:00] Điều Tra Sự Cố Thẻ Google (GTM / Code Snippets) & Bổ Sung Hook wp_body_open, wp_footer
+## [2026-10-20 13:42:00] Tối Ưu Hóa Vị Trí Thẻ Google Tag Manager (GTM-KX8XTV38) Cho Tag Assistant
 
-### 1. Phân Tích Nguyên Nhân Thẻ Google Chưa Được Nhận
-1. **Sự cố sập trang chủ trước đó:**
-   - File `public_html/index.php` trước khi fix bị thoát bằng lệnh `exit;`, dẫn đến bot của Google (Google Tag Assistant / Search Console / Analytics) quét trang chủ không thấy bất kỳ thẻ HTML nào.
-2. **Theme thiếu hook `wp_body_open()` và `wp_footer()`:**
-   - Plugin chèn mã trên web hiện tại là **WPCode (Insert Headers and Footers)** chứa thẻ Google Tag Manager:
-     - Header: Script Google Tag Manager container `GTM-KX8XTV38`.
-     - Body: `<noscript>` iframe Google Tag Manager.
-   - Tuy nhiên, theme `wp-templ` trước đây thiếu hoàn toàn hook `wp_body_open()` sau thẻ `<body>` và thiếu `wp_footer()` trước `</body>`. Do đó, phần mã `noscript` trong Body hoàn toàn không được in ra trang web, dẫn đến việc Google báo thẻ chưa được gắn chuẩn hoặc thiếu phần body.
-3. **Phân biệt plugin Code Snippets và WPCode:**
-   - Plugin "Code Snippets" cũ hiện không hoạt động (các snippet cũ đều tắt). Plugin đang quản trị mã Google thực tế là **WPCode (Insert Headers and Footers)**.
-4. **Cấu hình Google Analytics trong Google Tag Manager:**
-   - Website đang cài đặt container `GTM-KX8XTV38`. Nếu mục tiêu là kết nối Google Analytics 4 (GA4) hoặc Google Ads, người dùng cần vào giao diện `tagmanager.google.com` của container này tạo thẻ GA4/Google Tag và bấm **Publish (Xuất bản)** để container kích hoạt truyền dữ liệu.
+### 1. Phân Tích Sự Cố Kết Nối Trong Google Tag Manager Preview (Tag Assistant)
+Khi kiểm tra bằng tính năng **Preview (Xem trước)** trong Google Tag Manager (`tagassistant.google.com`), Tag Assistant yêu cầu:
+1. Thẻ script GTM phải được nạp **càng sớm càng tốt ngay đầu thẻ `<head>`** để kịp hoàn tất quá trình bắt tay (handshake postMessage) trước khi hết thời gian chờ (timeout). Trước đó thẻ nằm ở cuối `<head>` thông qua `wp_head()`.
+2. Thẻ `<noscript>` phải nằm ngay đầu thẻ mở `<body>`.
+3. Trình duyệt thực hiện Preview không được chặn script từ `googletagmanager.com` (ví dụ AdBlock, Brave Shields) hoặc chặn pop-up.
 
 ### 2. Các Hành Động Đã Khắc Phục
-- **Bổ sung `wp_body_open()` vào [public_html/libs/header.php](file:///Users/mac/ebo.com.vn/public_html/libs/header.php):** Tự động gọi hàm hook ngay đầu file header (ngay sau khi thẻ `<body>` mở trên mọi trang).
-- **Bổ sung `wp_footer()` vào [public_html/libs/footer.php](file:///Users/mac/ebo.com.vn/public_html/libs/footer.php):** Cho phép các script của plugin và mã nhúng footer thực thi trước khi đóng thẻ `</body>`.
-- **Cập nhật đồng bộ lên FTP hosting và mã nguồn local.**
-- **Kiểm tra trực tiếp kết quả tải trang:** Cả thẻ script trong Header và thẻ iframe noscript trong Body của `GTM-KX8XTV38` hiện đã hiển thị đầy đủ, chính xác trong mã nguồn HTML trang web `https://ebo.com.vn/`.
+- **Chuyển thẻ GTM lên đầu thẻ `<head>`:** Đã đưa đoạn mã Google Tag Manager (`GTM-KX8XTV38`) trực tiếp lên dòng đầu tiên ngay sau thẻ mở `<head>` trong [public_html/libs/head.php](file:///Users/mac/ebo.com.vn/public_html/libs/head.php).
+- **Chuyển thẻ noscript lên đầu thẻ `<body>`:** Đã đưa đoạn mã `<noscript>` trực tiếp lên dòng đầu tiên ngay sau thẻ mở `<body>` trong [public_html/libs/header.php](file:///Users/mac/ebo.com.vn/public_html/libs/header.php).
+- **Dọn dẹp WPCode:** Làm sạch ô nhập Header & Body trong WPCode để đảm bảo không bị nạp trùng lặp mã GTM hai lần.
+- **Đồng bộ mã nguồn local và máy chủ:** Cập nhật đồng bộ các tệp [libs/head.php](file:///Users/mac/ebo.com.vn/public_html/libs/head.php) và [libs/header.php](file:///Users/mac/ebo.com.vn/public_html/libs/header.php).

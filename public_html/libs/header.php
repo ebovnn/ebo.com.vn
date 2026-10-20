@@ -1,4 +1,8 @@
 <?php if (function_exists('wp_body_open')) { wp_body_open(); } ?>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KX8XTV38"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <header id="header">
   <div class="header-top">
     <div class="container">

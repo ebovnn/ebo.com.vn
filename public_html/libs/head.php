@@ -14,12 +14,10 @@ $url         = '';
 $thumb       = defined('APP_URL') ? APP_URL . 'assets/images/default/og-image.jpg' : '/assets/images/default/og-image.jpg';
 
 if ( function_exists('is_front_page') && (is_front_page() || is_home()) ) {
-    // Trang chủ
     $title       = get_bloginfo('name');
     $description = get_bloginfo('description');
     $url         = home_url('/');
 } elseif ( function_exists('is_singular') && is_singular() ) {
-    // Bài viết / trang đơn
     $post_id     = get_the_ID();
     $title       = get_the_title($post_id);
     $description = wp_strip_all_tags(get_the_excerpt($post_id));
@@ -29,13 +27,11 @@ if ( function_exists('is_front_page') && (is_front_page() || is_home()) ) {
         $thumb = $post_thumb;
     }
 } elseif ( function_exists('is_category') && (is_category() || is_tag() || is_tax()) ) {
-    // Trang danh mục / tag
     $term        = get_queried_object();
     $title       = ($term && isset($term->name)) ? $term->name . ' - ' . get_bloginfo('name') : get_bloginfo('name');
     $description = ($term && !empty($term->description)) ? $term->description : get_bloginfo('description');
     $url         = ($term) ? get_term_link($term) : home_url('/');
 } else {
-    // Fallback
     $title       = function_exists('get_bloginfo') ? get_bloginfo('name') : 'EBO - Giải pháp Website, Marketing Online';
     $description = function_exists('get_bloginfo') ? get_bloginfo('description') : '';
     $url         = function_exists('home_url') ? home_url('/') : 'https://ebo.com.vn/';
@@ -44,6 +40,13 @@ if ( function_exists('is_front_page') && (is_front_page() || is_home()) ) {
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KX8XTV38');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta name="format-detection" content="telephone=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

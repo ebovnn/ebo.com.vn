@@ -3,6 +3,10 @@ key.json
 ftp.txt
 taikhoanweb
 
+# Python cache & temp
+__pycache__/
+*.py[cod]
+
 # Logs & temp files
 *.log
 scratch/
